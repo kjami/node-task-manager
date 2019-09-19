@@ -10,6 +10,10 @@ const port = process.env.PORT || 3000;
 
 const app = express();
 
+// app.use((req, res, next) => {
+//     res.status(503).send("Currently under maintenance.");
+// });
+
 app.use(express.json());
 
 app.use(taskRoute);
