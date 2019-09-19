@@ -19,9 +19,43 @@ router.post("/tasks", auth, async (req, res) => {
 
 router.get("/tasks", auth, async (req, res) => {
     try {
-        const tasks = await req.user.populate('tasks').execPopulate();
+        const q = req.query;
+        const match = {};
+        const sort = {};
+        const limit = parseInt(q.limit < 0 ? 10 : q.limit);
+        const skip = parseInt((q.page < 1 ? 0 : q.page-1) * limit);
+
+        if (q.completed === "true") {
+            match.completed = true
+        }
+
+        if (q.completed === "false") {
+            match.completed = false
+        }
+
+        if (q.sortBy) {
+            const sortBy = q.sortBy;
+            if (sortBy.indexOf("_") >= 0) {
+                const sortByArr = sortBy.split("_");
+                sort[sortByArr[0]] = sortByArr[1].toLowerCase() == "desc" ? -1 : 1;
+            } else {
+                sort[sortBy] = 1;
+            }
+        }
+
+        console.log(sort);
+
+        await req.user.populate({
+            path: 'tasks',
+            match,
+            options: {
+                limit,
+                skip,
+                sort
+            }
+        }).execPopulate();
         // const tasks = await Task.find({ owner: req.user._id });
-        res.send(tasks);
+        res.send(req.user.tasks);
     } catch (error) {
         res.status(400).send(error);
     }
