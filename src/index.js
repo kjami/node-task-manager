@@ -2,8 +2,8 @@
 const express = require('express');
 const chalk = require('chalk');
 require("./db/mongoose");
-const userRoute = require("./routes/userRoute");
-const taskRoute = require("./routes/taskRoute");
+const userRoute = require("./routes/user");
+const taskRoute = require("./routes/task");
 
 // eslint-disable-next-line no-process-env
 const port = process.env.PORT || 3000;

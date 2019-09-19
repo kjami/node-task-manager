@@ -1,4 +1,4 @@
-/* global require, module */
+/* global require, module, process */
 const mongoose = require('mongoose');
 const validator = require('validator');
 const bcrypt = require('bcryptjs');
@@ -48,7 +48,10 @@ const userSchema = new mongoose.Schema({
             type: String,
             required: true
         }
-    }]
+    }],
+    avatar: {
+        type: String
+    }
 }, {
     timestamps: true
 });
@@ -64,12 +67,13 @@ userSchema.methods.toJSON = function () {
 
     delete user.tokens;
     delete user.password;
+    delete user.avatar;
     return user;
 }
 
 userSchema.methods.generateAuthToken = async function () {
     const user = this;
-    const token = jwt.sign({ email: user.email }, "werwerowerj23423423kkwerwer");
+    const token = jwt.sign({ email: user.email }, process.env.SECRET_KEY);
     user.tokens = user.tokens.concat({ token });
     await user.save();
     return token;

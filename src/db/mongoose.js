@@ -1,7 +1,8 @@
-/* global require*/
+/* global require, process*/
 const mongoose = require('mongoose');
 
-const mongoUrl = "mongodb://127.0.0.1:3001/task-manager-api";
+// eslint-disable-next-line no-process-env
+const mongoUrl = process.env.MONGO_URL;
 
 mongoose.connect(mongoUrl, { 
     useNewUrlParser: true, 
