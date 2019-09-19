@@ -9,4 +9,10 @@ mongoose.connect(mongoUrl, {
     useUnifiedTopology: true,
     useCreateIndex: true,
     useFindAndModify: true
+}).then(() => {
+    // eslint-disable-next-line no-console
+    console.log("Database started.");
+}).catch((error) => {
+    // eslint-disable-next-line no-console
+    console.log("Unab;e to start database!", error.message);
 });
