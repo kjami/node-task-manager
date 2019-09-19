@@ -14,5 +14,5 @@ mongoose.connect(mongoUrl, {
     console.log("Database started.");
 }).catch((error) => {
     // eslint-disable-next-line no-console
-    console.log("Unab;e to start database!", error.message);
+    console.log("Unable to start database!", error.message);
 });
