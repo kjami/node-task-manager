@@ -1,4 +1,4 @@
-/* global require, exports */
+/* global require, module */
 const User = require('../models/user');
 const express = require('express');
 const router = new express.Router();
@@ -31,7 +31,7 @@ router.post("/user/login", async (req, res) => {
 
 router.post("/user/logout", auth, async (req, res) => {
     try {
-        req.user.tokens = req.user.tokens.filter(t => t.token !== req.token);
+        req.user.tokens = req.user.tokens.filter((t) => t.token !== req.token);
         await req.user.save();
         res.send();
     } catch (error) {
@@ -55,21 +55,24 @@ router.get("/users/me", auth, async (req, res) => {
 
 router.patch("/users/me", auth, async (req, res) => {
     const updates = Object.keys(req.body);
-    const allowedUpdates = ["name", "email", "password", "age"];
+    const allowedUpdates = ["name", "email", "password", "age"]; //eslint-disable-line array-element-newline
 
     try {
-        const isInvalid = updates.find(x => allowedUpdates.indexOf(x) < 0);
+        const isInvalid = updates.find((x) => allowedUpdates.indexOf(x) < 0);
         if (isInvalid) {
             return res.status(500).send();
         }
 
         let user = req.user;
-        updates.forEach(update => user[updates] = req.body[update]);
+        updates.forEach((update) => {
+            user[updates] = req.body[update]
+        });
         await user.save();
         res.send(user);
     } catch (error) {
         res.status(400).send(error);
     }
+    return null;
 });
 
 router.delete('/users/me', auth, async (req, res) => {
@@ -79,6 +82,20 @@ router.delete('/users/me', auth, async (req, res) => {
         res.send(req.user);
     } catch (error) {
         res.status(400).send(error);
+    }
+});
+
+router.get("/users/:id/avatar", async (req, res) => {
+    try {
+        const user = await User.findById(req.params.id);
+        if (!user || !user.avatar) {
+            throw new Error();
+        }
+
+        res.set('Content-type', 'image/jpg');
+        res.send(user.avatar);
+    } catch (error) {
+        res.status(400).send("No profile pic");
     }
 });
 
@@ -96,27 +113,13 @@ const upload = multer({
     }
 });
 
-router.get("/users/:id/avatar", async (req, res) => {
-    try {
-        const user = await User.findById(req.params.id);
-        if (!user || !user.avatar) {
-            throw new Error();
-        }
-
-        res.set('Content-type', 'image/png');
-        res.send(user.avatar);
-    } catch (error) {
-        res.status(400).send("No profile pic");
-    }
-});
-
 router.post("/users/me/avatar", auth, upload.single('avatar'), async (req, res) => {
     // const buffer = await sharp(req.file.buffer).resize({ width: 250, height: 250 }).png().toBuffer();
     // req.user.avatar = buffer;
     req.user.avatar = req.file.buffer;
     await req.user.save();
     res.send();
-}, (error, req, res, next) => {
+}, (error, req, res, next) => { //eslint-disable-line max-params, no-unused-vars
     res.status(400).send({ error: error.message });
 });
 

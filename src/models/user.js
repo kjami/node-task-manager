@@ -73,6 +73,7 @@ userSchema.methods.toJSON = function () {
 
 userSchema.methods.generateAuthToken = async function () {
     const user = this;
+    // eslint-disable-next-line no-process-env
     const token = jwt.sign({ email: user.email }, process.env.SECRET_KEY);
     user.tokens = user.tokens.concat({ token });
     await user.save();
@@ -80,6 +81,7 @@ userSchema.methods.generateAuthToken = async function () {
 }
 
 userSchema.statics.findByCredentials = async (email, password) => {
+    // eslint-disable-next-line no-use-before-define
     const user = await User.findOne({ email });
 
     if (!user) {
@@ -104,6 +106,7 @@ userSchema.pre('save', async function (next) {
 });
 
 userSchema.pre('remove', async function (next) {
+    // eslint-disable-next-line no-invalid-this
     const user = this;
     await Task.deleteMany({ owner: user._id });
     next();

@@ -1,4 +1,4 @@
-/* global require, exports */
+/* global require, module */
 const Task = require('../models/task');
 const express = require('express');
 const router = new express.Router();
@@ -22,8 +22,8 @@ router.get("/tasks", auth, async (req, res) => {
         const q = req.query;
         const match = {};
         const sort = {};
-        const limit = parseInt(q.limit < 0 ? 10 : q.limit);
-        const skip = parseInt((q.page < 1 ? 0 : q.page-1) * limit);
+        const limit = parseInt(q.limit < 0 ? 10 : q.limit); //eslint-disable-line radix
+        const skip = parseInt((q.page < 1 ? 0 : q.page - 1) * limit); //eslint-disable-line radix
 
         if (q.completed === "true") {
             match.completed = true
@@ -42,8 +42,6 @@ router.get("/tasks", auth, async (req, res) => {
                 sort[sortBy] = 1;
             }
         }
-
-        console.log(sort);
 
         await req.user.populate({
             path: 'tasks',
@@ -74,14 +72,15 @@ router.get("/tasks/:id", auth, async (req, res) => {
     } catch (error) {
         res.status(400).send(error);
     }
+    return null;
 });
 
 router.patch("/tasks/:id", auth, async (req, res) => {
     const updates = Object.keys(req.body);
-    const allowedUpdates = ["description", "completed"];
+    const allowedUpdates = ["description", "completed"]; //eslint-disable-line array-element-newline
 
     try {
-        const isInvalid = updates.find(x => allowedUpdates.indexOf(x) < 0);
+        const isInvalid = updates.find((x) => allowedUpdates.indexOf(x) < 0);
         if (isInvalid) {
             return res.status(500).send();
         }
@@ -93,12 +92,15 @@ router.patch("/tasks/:id", auth, async (req, res) => {
         if (!task) {
             return res.status(404).send();
         }
-        updates.forEach(update => task[updates] = req.body[update]);
+        updates.forEach((update) => {
+            task[updates] = req.body[update]
+        });
         await task.save();
         res.send(task);
     } catch (error) {
         res.status(400).send(error);
     }
+    return null;
 });
 
 router.delete('/tasks/:id', auth, async (req, res) => {
@@ -117,6 +119,7 @@ router.delete('/tasks/:id', auth, async (req, res) => {
     } catch (error) {
         res.status(400).send(error);
     }
+    return null;
 });
 
 module.exports = router;
