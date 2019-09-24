@@ -1,6 +1,6 @@
 <h1>A node js API for task manager.</h1>
 
-API is hosted on http://kish-node-task-manager.herokuapp.com
+API is hosted on http://task-manager.kish.rocks
 
 For running project locally, add the following environment variables in <code>./config/dev.env</code> and then run <code>npm run dev</code>
 
