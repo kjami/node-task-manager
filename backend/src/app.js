@@ -1,13 +1,17 @@
-/* global require, module */
+/* global require, module, __dirname */
 const express = require('express');
-require("./db/mongoose");
-const userRoute = require("./routes/user");
-const taskRoute = require("./routes/task");
+require('./db/mongoose');
+const userRoute = require('./routes/user');
+const taskRoute = require('./routes/task');
+const path = require('path');
 
 const app = express();
 
+const publicPath = path.join(__dirname, '../../public');
+app.use(express.static(publicPath));
+
 // app.use((req, res, next) => {
-//     res.status(503).send("Currently under maintenance.");
+//     res.status(503).send('Currently under maintenance.');
 // });
 const allowCrossDomain = (req, res, next) => {
     res.header('Access-Control-Allow-Origin', '*');
