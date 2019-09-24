@@ -10,7 +10,9 @@
   },
   "jest": {
     "testEnvironment": "node",
-    "setupFilesAfterEnv": ["<rootDir>/backend/tests/setupTests.js"]
+    "setupFilesAfterEnv": [
+      "<rootDir>/backend/tests/setupTests.js"
+    ]
   },
   "keywords": [],
   "author": "",
