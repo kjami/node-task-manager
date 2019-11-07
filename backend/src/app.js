@@ -1,4 +1,4 @@
-/* global require, module, __dirname */
+/* global require, module, __dirname, process */
 const express = require('express');
 require('./db/mongoose');
 const userRoute = require('./routes/user');
@@ -6,9 +6,6 @@ const taskRoute = require('./routes/task');
 const path = require('path');
 
 const app = express();
-
-const publicPath = path.join(__dirname, '../../public');
-app.use(express.static(publicPath));
 
 // app.use((req, res, next) => {
 //     res.status(503).send('Currently under maintenance.');
@@ -27,5 +24,15 @@ app.use(express.json());
 
 app.use(taskRoute);
 app.use(userRoute);
+
+// const publicPath = path.join(__dirname, '../../public');
+// app.use(express.static(publicPath));
+
+// eslint-disable-next-line no-process-env
+if (process.env.NODE_ENV == 'production') {
+    const publicPath = path.join(__dirname, '../../client/build');
+    // app.use(express.static(publicPath));
+    app.use(express.static(publicPath))
+}
 
 module.exports = app;
